@@ -3,6 +3,7 @@ package com.societycare.societycare.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.societycare.societycare.entity.User;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -25,6 +27,7 @@ public class UserService {
                 && userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             throw new IllegalArgumentException("User with phone number " + user.getPhoneNumber() + " already exists");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -55,7 +58,7 @@ public class UserService {
                         existingUser.setRole(updatedUser.getRole());
                     }
                     if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
-                        existingUser.setPassword(updatedUser.getPassword());
+                        existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                     }
                     return userRepository.save(existingUser);
                 })

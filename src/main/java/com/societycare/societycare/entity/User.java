@@ -2,6 +2,7 @@ package com.societycare.societycare.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.societycare.societycare.enums.Role;
 
 import jakarta.persistence.Column;
@@ -46,6 +47,7 @@ public class User {
 
     @NotBlank(message = "Password is required")
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "phone_number", unique = true)
